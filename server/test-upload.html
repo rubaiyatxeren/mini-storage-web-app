@@ -1,0 +1,170 @@
+<!-- test-upload.html -->
+<!DOCTYPE html>
+<html>
+  <head>
+    <title>Test File Upload</title>
+    <style>
+      body {
+        font-family: Arial, sans-serif;
+        max-width: 500px;
+        margin: 50px auto;
+      }
+      .container {
+        padding: 20px;
+        border: 1px solid #ddd;
+        border-radius: 5px;
+      }
+      input,
+      button {
+        margin: 10px 0;
+        padding: 10px;
+        width: 100%;
+      }
+      .result {
+        margin-top: 20px;
+        padding: 10px;
+        background: #f5f5f5;
+      }
+    </style>
+  </head>
+  <body>
+    <div class="container">
+      <h2>Test File Upload</h2>
+
+      <!-- Step 1: Login -->
+      <h3>1. Login First</h3>
+      <input
+        type="email"
+        id="email"
+        placeholder="Email"
+        value="test@example.com"
+      />
+      <input
+        type="password"
+        id="password"
+        placeholder="Password"
+        value="password123"
+      />
+      <button onclick="login()">Login</button>
+      <div class="result" id="loginResult"></div>
+
+      <!-- Step 2: Upload -->
+      <h3>2. Upload File</h3>
+      <select id="uploadType">
+        <option value="file">Any File</option>
+        <option value="image" selected>Image</option>
+        <option value="video">Video</option>
+      </select>
+      <input type="file" id="fileInput" />
+      <input type="text" id="tags" placeholder="Tags (optional)" />
+      <button onclick="uploadFile()">Upload File</button>
+      <div class="result" id="uploadResult"></div>
+    </div>
+
+    <script>
+      let token = "";
+
+      async function login() {
+        const email = document.getElementById("email").value;
+        const password = document.getElementById("password").value;
+
+        try {
+          const response = await fetch("http://localhost:3000/api/auth/login", {
+            method: "POST",
+            headers: {
+              "Content-Type": "application/json",
+            },
+            body: JSON.stringify({ email, password }),
+          });
+
+          const data = await response.json();
+          if (data.success) {
+            token = data.token;
+            document.getElementById(
+              "loginResult"
+            ).innerHTML = `<strong>✅ Login successful!</strong><br>Token saved: ${token.substring(
+              0,
+              20
+            )}...`;
+          } else {
+            document.getElementById(
+              "loginResult"
+            ).innerHTML = `<strong>❌ Login failed:</strong> ${data.message}`;
+          }
+        } catch (error) {
+          document.getElementById(
+            "loginResult"
+          ).innerHTML = `<strong>❌ Error:</strong> ${error.message}`;
+        }
+      }
+
+      async function uploadFile() {
+        if (!token) {
+          alert("Please login first!");
+          return;
+        }
+
+        const fileInput = document.getElementById("fileInput");
+        const uploadType = document.getElementById("uploadType").value;
+        const tags = document.getElementById("tags").value;
+
+        if (!fileInput.files[0]) {
+          alert("Please select a file!");
+          return;
+        }
+
+        const formData = new FormData();
+
+        // Add file with correct key based on upload type
+        if (uploadType === "image") {
+          formData.append("image", fileInput.files[0]);
+        } else if (uploadType === "video") {
+          formData.append("video", fileInput.files[0]);
+        } else {
+          formData.append("file", fileInput.files[0]);
+        }
+
+        if (tags) {
+          formData.append("tags", tags);
+        }
+
+        try {
+          const response = await fetch(
+            `http://localhost:3000/api/upload/${uploadType}`,
+            {
+              method: "POST",
+              headers: {
+                Authorization: `Bearer ${token}`,
+                // Don't set Content-Type for FormData - browser sets it automatically
+              },
+              body: formData,
+            }
+          );
+
+          const data = await response.json();
+          const resultDiv = document.getElementById("uploadResult");
+
+          if (data.success) {
+            resultDiv.innerHTML = `
+                        <strong>✅ Upload successful!</strong><br>
+                        File: ${data.data.file.name}<br>
+                        Size: ${(data.data.file.size / 1024).toFixed(2)} KB<br>
+                        URL: <a href="${
+                          data.data.cloudinaryUrl || data.data.file.url
+                        }" target="_blank">View File</a>
+                    `;
+          } else {
+            resultDiv.innerHTML = `
+                        <strong>❌ Upload failed:</strong> ${data.message}<br>
+                        Error: ${data.error || "No error details"}
+                    `;
+          }
+        } catch (error) {
+          document.getElementById(
+            "uploadResult"
+          ).innerHTML = `<strong>❌ Network error:</strong> ${error.message}`;
+        }
+      }
+    </script>
+  </body>
+</html>
