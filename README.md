@@ -24,7 +24,8 @@ Storagify is a comprehensive file management solution that allows users to secur
 
 ### Demo Previews:
 <img width="1366" height="643" alt="Screenshot 2026-01-12 at 16-36-29 Storagify - File uploading web app" src="https://github.com/user-attachments/assets/ce08f9d1-7b24-4758-846e-c9d36a88e920" />
-<img width="1366" height="643" alt="Screenshot 2026-01-12 at 16-36-29 Storagify - File uploading web app" src="https://github.com/user-attachments/assets/3a2f9f61-319e-4f1c-9581-ee892cb5bf30" />
+<img width="1349" height="1063" alt="Screenshot 2026-01-12 at 16-36-22 Storagify - File uploading web app" src="https://github.com/user-attachments/assets/35101cac-7ffe-4611-97b4-a66919c9a72a" />
+
 <img width="1349" height="643" alt="Screenshot 2026-01-12 at 16-36-36 Storagify - File uploading web app" src="https://github.com/user-attachments/assets/8a57c28a-8edb-4598-af62-96139cb5ce6b" />
 
 
