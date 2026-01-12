@@ -75,9 +75,7 @@ const sendUploadedNotification = async (email, fileDetails, username) => {
             <div style="font-family: Arial, sans-serif; max-width: 600px; margin: 0 auto;">
           <h2 style="color: #4CAF50;">✅ File Successfully Uploaded!</h2>
           <p>Dear ${username},</p>
-          <p>Your file "${
-            fileDetails.name.split(".")[0]
-          }" has been successfully uploaded to Cloudinary.</p>
+          <p>Your file has been successfully uploaded to Cloudinary.</p>
           
           <div style="background-color: #f9f9f9; padding: 15px; border-radius: 5px; margin: 20px 0;">
             <h3>📄 File Details</h3>
